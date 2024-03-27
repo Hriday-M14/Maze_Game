@@ -22,10 +22,10 @@ Runner.run(Runner.create(), engine);
 
 // Walls or Borders of Canvas
 const walls = [
-    Bodies.rectangle(width/2, 0, width, 40, {isStatic: true}),
-    Bodies.rectangle(width/2, height, height, 40, {isStatic: true}),
-    Bodies.rectangle(0, height/2, 40, height, {isStatic: true}),
-    Bodies.rectangle(width, height/2, 40, height, {isStatic: true})
+    Bodies.rectangle(width/2, 0, width, 3, {isStatic: true}),
+    Bodies.rectangle(width/2, height, height, 3, {isStatic: true}),
+    Bodies.rectangle(0, height/2, 3, height, {isStatic: true}),
+    Bodies.rectangle(width, height/2, 3, height, {isStatic: true})
 ];
 
 World.add(world, walls);
@@ -136,6 +136,24 @@ const mazeGenerator = (row, column) => {
         mazeGenerator(nextRow, nextCol);
     }
 };
+
+// Goal 
+const goal = Bodies.rectangle(
+    width - unitLength/2,
+    height - unitLength/2,
+    unitLength * 0.7,
+    unitLength * 0.7,
+    { isStatic: true }
+);
+
+// Ball
+const ball = Bodies.circle(
+    unitLength/2,
+    unitLength/2,
+    unitLength/4
+);
+World.add(world, goal);
+World.add(world, ball);
 
 mazeGenerator(startRow, startCol);
 makeHorizontalSegments();
