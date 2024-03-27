@@ -1,6 +1,7 @@
-const {Engine, Render, Runner, World, Bodies} = Matter;
+const {Engine, Render, Runner, World, Bodies, Body, Events} = Matter;
 
 const engine = Engine.create();
+engine.world.gravity.y = 0;
 const {world} = engine;
 
 const width = 600, height = 600;
@@ -143,14 +144,15 @@ const goal = Bodies.rectangle(
     height - unitLength/2,
     unitLength * 0.7,
     unitLength * 0.7,
-    { isStatic: true }
+    { label: 'goal', isStatic: true }
 );
 
 // Ball
 const ball = Bodies.circle(
     unitLength/2,
     unitLength/2,
-    unitLength/4
+    unitLength/4,
+    { label: 'ball' }
 );
 World.add(world, goal);
 World.add(world, ball);
@@ -158,3 +160,35 @@ World.add(world, ball);
 mazeGenerator(startRow, startCol);
 makeHorizontalSegments();
 makeVerticalSegments();
+
+document.addEventListener('keydown', (event) => {
+    const {x, y} = ball.velocity;
+    if(event.keyCode === 87)
+    {
+        Body.setVelocity(ball, { x, y: y - 5 });
+    }
+    else if(event.keyCode === 68)
+    {
+        Body.setVelocity(ball, { x: x + 5, y });
+    }
+    else if(event.keyCode === 83)
+    {
+        Body.setVelocity(ball, { x, y: y + 5 });
+    }
+    else if(event.keyCode === 65)
+    {
+        Body.setVelocity(ball, { x: x - 5, y });
+    }
+
+});
+
+// Win Condition
+Events.on(engine, 'collisionStart', event => {
+    event.pairs.forEach(collision => {
+        const labels = ['ball', 'goal'];
+        if(labels.includes(collision.bodyA.label) && labels.includes(collision.bodyB.label))
+        {
+            console.log("User Won");
+        }
+    });
+});
